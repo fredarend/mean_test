@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html ng-app="primeiraApp">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{{ consts.appName }}</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="/assets/css/deps.min.css">
+  <link rel="stylesheet" href="/assets/css/app.min.css">
+  <link rel="stylesheet" href="/assets/css/daterangepicker.css">
+  <link rel="stylesheet" href="/assets/css/datepicker3.css">
+  <link rel="stylesheet" href="/assets/css/isteven-multi-select.css">
+</head>
+<body class="skin-blue fixed sidebar-mini">
+  <div class="wrapper">
+    <header class="main-header" ng-include="'/template/header/header.html'"></header>
+    <aside class="main-sidebar" ng-include="'/template/menu/menu.html'"></aside>
+    <div class="content-wrapper" ui-view></div>
+    <footer class="main-footer" ng-include="'/template/footer/footer.html'"></footer>
+  </div>
+
+
+  <script src="/assets/js/deps.min.js"></script>
+  <script src="/assets/js/app.min.js"></script>
+  <script src="/assets/js/moment.min.js"></script>
+  <script src="/assets/js/datepicker3.js"></script>
+  <script src="/assets/js/daterangepicker.js"></script>
+  <script src="/assets/js/isteven-multi-select.js"></script>
+</body>
+</html>

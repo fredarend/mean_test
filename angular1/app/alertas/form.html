@@ -1,0 +1,126 @@
+<div role="form">
+  <div class="box-body">
+
+    <div class="col-xs-12 col-md-6 col-lg-6">
+      <div class="form-group">
+        <label>Tipo de Ação:</label>
+        <div class="form-group">
+          <div     
+              isteven-multi-select
+              translation="ptbrAcao" 
+              input-model="tipoAlerta"
+              output-model="outputBrowsers"
+              button-label="icon name"
+              item-label="icon name maker"
+              tick-property="ticked"
+          >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-md-6 col-lg-6">
+      <div class="form-group">
+        <label>Fonte:</label>
+        <div class="form-group">
+          <div     
+            isteven-multi-select
+            translation="ptbrFonte" 
+            input-model="fonteAlerta"
+            output-model="outputBrowsers"
+            button-label="icon name"
+            item-label="icon name maker"
+            tick-property="ticked"
+          >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-md-6 col-lg-6">
+      <div class="form-group">
+        <label>Suspeitos:</label>
+        <div class="form-group">
+          <div     
+            isteven-multi-select
+            translation="ptbrSuspeito" 
+            input-model="suspeito"
+            output-model="outputBrowsers"
+            button-label="icon name"
+            item-label="icon name maker"
+            tick-property="ticked"
+          >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Date and time range -->
+    <div class="col-xs-12 col-md-6 col-lg-6">
+      <div class="form-group">
+        <label>Data e Hora</label>
+        <div class="input-group">
+          <div class="input-group-addon">
+            <i class="fa fa-clock-o"></i>
+          </div>
+          <input ng-model="alerta.dataHora" type="text" class="form-control pull-right" id="dataHora">
+        </div>
+      </div>
+    </div>
+
+    <field id="billingCycleClientId" label="Número do BO" model="alerta.numbo"
+         placeholder="Informe o Número do BO" grid="12 6 6" type="number" readonly="tabDelete"></field>
+
+    <field id="billingCycleType" label="Relato da Ocorrência" model="alerta.relato"
+         placeholder="Relate a ocorrência" grid="12 6 6" readonly="tabDelete"></field>
+
+    <field id="billingCycleType" label="Módus" model="alerta.modus"
+         placeholder="Especifique o modo de operação" grid="12 6 6" readonly="tabDelete"></field>
+
+    <field id="billingCycleType" label="Falhas Apuradas" model="alerta.falhas"
+         placeholder="Especifique as falhas apuradas" grid="12 6 6" readonly="tabDelete"></field>
+
+    <hr>
+
+    <div class="col-xs-12">
+      <fieldset>
+        <legend>Anexos</legend>
+      </fieldset>
+    </div>
+
+    <div class="col-xs-12 col-md-6 col-lg-6">
+      <div class="form-group">
+        <div class="input-group">
+          <label for="exampleInputFile">Anexar um Boletim de Ocorrência</label>
+          <input type="file" id="exampleInputFile">
+
+          <p class="help-block">Deve ser no formato PDF.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-md-6 col-lg-6">
+      <div class="form-group">
+        <div class="input-group">
+          <label for="exampleInputFile">Anexar Imagens</label>
+          <input type="file" id="exampleInputFile">
+
+          <p class="help-block">Deve ser no formato JPG.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+  </div>
+
+  <div class="box-footer">
+    <button class="btn btn-primary" ng-click="createBillingCycle()"
+         ng-if="tabCreate">Incluir</button>
+    <button class="btn btn-info" ng-click="updateBillingCycle()"
+         ng-if="tabUpdate">Alterar</button>
+    <button class="btn btn-danger" ng-click="deleteBillingCycle()"
+         ng-if="tabDelete">Excluir</button>
+    <button class="btn btn-default" ng-click="cancel()">Cancelar</button>
+  </div>
+</div>
