@@ -4,7 +4,7 @@ const mongoose = restful.mongoose
 
 // SUSPEITOS - INICIO //
 const suspeitosSchema = new mongoose.Schema({
-  nome: { type: String },
+  nome: { type: String, required: true},
   sexo: { type: String },
   corPele: { type: String },
   altura: { type: String },
@@ -16,7 +16,7 @@ const suspeitosSchema = new mongoose.Schema({
 
 //VEICULO - SUSPEITO//
 const veiculosSchema = new mongoose.Schema({
-  marca: { type: String },
+  marca: { type: String, required: true },
   modelo: { type: String },
   cor: { type: String },
   ano: { type: String },
@@ -71,6 +71,8 @@ const eventosDeRiscoSchema = new mongoose.Schema({
 // ACOES //
 const acoesSchema = new mongoose.Schema({
   dataCadastro: { type: Date, default: Date.now },
+  latitude: { type: String, required: true },
+  longitude: { type: String, required: true },
   suspeitos: [suspeitosSchema],
   veiculos: [veiculosSchema],
   alertas: [alertasSchema],
