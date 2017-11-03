@@ -39,18 +39,35 @@ acoes.route('count', function(req, res, next) {
 
 //EVENTOS DE RISCO. GT é utilizado para comparação.
 acoes.route('searchEventosDeRisco', function(req, res, next) {
-	acoes.find({ eventosDeRisco: { $gt: [] } }, 'dataCadastro eventosDeRisco').sort('-created').exec(function(error, value) {
+  acoes.find({ eventosDeRisco: { $gt: [] } }, ' eventosDeRisco suspeitos veiculos').sort('-created').exec(function(error, value) {
+      if(error) {
+        res.status(500).json({errors: [error]})
+      } else {
+        res.json({value})
+      }
+  })
+})
+
+//EVENTOS DE RISCO. GT é utilizado para comparação.
+acoes.route('searchAlertas', function(req, res, next) {
+  acoes.find({ alertas: { $gt: [] } }, ' alertas suspeitos veiculos').sort('-created').exec(function(error, value) {
+      if(error) {
+        res.status(500).json({errors: [error]})
+      } else {
+        res.json({value})
+      }
+  })
+})
+
+//EVENTOS DE RISCO. GT é utilizado para comparação.
+acoes.route('searchAcoesCriminosas', function(req, res, next) {
+	acoes.find({ acoesCriminosas: { $gt: [] } }, ' eventosDeRisco suspeitos veiculos').sort('-created').exec(function(error, value) {
 	    if(error) {
 	      res.status(500).json({errors: [error]})
 	    } else {
 	      res.json({value})
 	    }
 	})
-})
-
-//EVENTOS DE RISCO. GT é utilizado para comparação.
-acoes.route('limparBase', function(req, res, next) {
-	acoes.remove()
 })
 
 module.exports = acoes

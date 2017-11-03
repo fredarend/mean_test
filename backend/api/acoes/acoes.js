@@ -4,7 +4,7 @@ const mongoose = restful.mongoose
 
 // SUSPEITOS - INICIO //
 const suspeitosSchema = new mongoose.Schema({
-  nome: { type: String, required: true},
+  nome: { type: String, required: true },
   sexo: { type: String },
   corPele: { type: String },
   altura: { type: String },
