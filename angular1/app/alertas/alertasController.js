@@ -5,10 +5,11 @@ angular.module('primeiraApp').controller('AlertasCtrl', [
   'msgs',
   'tabs',
   'consts',
+  'leafletData',
   AlertasController
 ])
 
-function AlertasController($scope, $http, $location, msgs, tabs, consts) {
+function AlertasController($scope, $http, $location, msgs, tabs, consts, leafletData) {
 
   var vm = $scope
 
@@ -16,7 +17,6 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts) {
     const page = parseInt($location.search().page) || 1
     const url = `${consts.apiUrl}/acoes/searchAlertas/?skip=${(page - 1) * 10}&limit=10`
     $http.get(url).then(function(resp) {
-      console.log(resp.data)
       vm.alertas = resp.data
       vm.alerta = {}
       $http.get(`${consts.apiUrl}/acoes/countAlertas`).then(function(resp) {
@@ -192,6 +192,85 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts) {
   
   //FIM -- ANGULAR-MULTI-SELECT
 
+  //MAPA 
+
+  vm.markers = new Array();
+
+  vm.buscaLatLong = function() {
+    const url = `${consts.apiUrl}/acoes/searchAlertas/`
+    $http.get(url).then(function(resp) {
+      vm.alertas = resp.data
+      angular.forEach(vm.alertas, function(value, key){
+
+        vm.latitude = value.latitude
+        vm.longitude = value.longitude
+
+        angular.forEach(value.alertas, function(value, key) {
+          vm.tipoAcao = value.tipoAcao
+          vm.fonte = value.fonte
+
+          var message = vm.tipoAcao + '<br><br><span>Fonte: ' + vm.fonte + '</span>'
+          var icon = 'user'
+          var color = 'blue'
+
+          vm.markers.push({
+              group: "Santa Catarina",
+              lat: vm.latitude,
+              lng: vm.longitude,
+              message: message,
+              icon: {
+                  type: 'awesomeMarker',
+                  prefix: 'fa',
+                  icon: icon,
+                  markerColor: color
+              },
+              label: {
+                  options: {
+                      noHide: true
+                  }
+              }
+          });
+
+        })
+      })
+    })
+  }
+
+
+  angular.extend(vm, { // EXTENDE AS PROPRIEDADES DO MAP (MARCADORES, LOCALIZAÇÃO INCIAL..)
+      center: { // LOCALIZAÇÃO INICIAL  .
+          lat: -27.226548,
+          lng: -52.018311,
+          zoom: 17
+      },
+      markers: vm.markers,
+      defaults: {
+          tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          zoomControlPosition: 'topright',
+          tileLayerOptions: {
+              opacity: 0.9,
+              detectRetina: true,
+              reuseTiles: true,
+              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> | &copy <a href="http://www.openstreetmap.org/copyright">GSEG Sistemas</a>',
+          },
+          scrollWheelZoom: true,
+          minZoom: 3,
+          worldCopyJump: true
+      }
+  });
+
+  vm.ajustarMapa = function() {
+      leafletData.getMap().then(function(map) {
+          setTimeout(function() {
+              map.invalidateSize();
+              map._resetView(map.getCenter(), map.getZoom(), true);   
+              map.fire('layeradd', {layer: this});
+
+          }, 200);
+      });
+  };
+
+  vm.ajustarMapa();
 
   vm.searchAlertas()
 

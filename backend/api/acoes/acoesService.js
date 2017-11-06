@@ -69,16 +69,6 @@ acoes.route('countAlertas', function(req, res, next) {
   })
 })
 
-acoes.route('buscaSuspeitos', function(req, res, next) {
-  acoes.find({}, 'suspeitos').sort('-created').aggregate({ $group: {_id: null}}).exec(function(error, value) {
-      if(error) {
-        res.status(500).json({errors: [error]})
-      } else {
-        res.json(value)
-      }
-  })
-})
-
 //AÇÕES CRIMINOSAS.
 acoes.route('searchAcoesCriminosas', function(req, res, next) {
 	acoes.find({ acoesCriminosas: { $gt: [] } }, ' acoesCriminosas suspeitos veiculos').sort('-created').exec(function(error, value) {
