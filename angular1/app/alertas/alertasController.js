@@ -12,14 +12,14 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts) {
 
   var vm = $scope
 
-  vm.getBillingCycles = function() {
+  vm.searchAlertas = function() {
     const page = parseInt($location.search().page) || 1
-    const url = `${consts.apiUrl}/billingCycles?skip=${(page - 1) * 10}&limit=10`
+    const url = `${consts.apiUrl}/acoes/searchAlertas/?skip=${(page - 1) * 10}&limit=10`
     $http.get(url).then(function(resp) {
-      vm.billingCycles = resp.data
-      vm.billingCycle = {}
-      initCreditsAndDebts()
-      $http.get(`${consts.apiUrl}/billingCycles/count`).then(function(resp) {
+      console.log(resp.data)
+      vm.alertas = resp.data
+      vm.alerta = {}
+      $http.get(`${consts.apiUrl}/acoes/countAlertas`).then(function(resp) {
         vm.pages = Math.ceil(resp.data.value / 10)
         tabs.show(vm, {tabList: true, tabCreate: true})
       })
@@ -127,6 +127,7 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts) {
     vm.total = vm.credit - vm.debt
   }
 
+
   var initCreditsAndDebts = function() {
     if(!vm.billingCycle.debts || !vm.billingCycle.debts.length) {
       vm.billingCycle.debts = []
@@ -152,19 +153,16 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts) {
   //INICIO -- ANGULAR-MULTI-SELECT
 
   vm.ptbrAcao = {
-      selectAll: "Todos",
       selectNone: "Limpar",
       search: "Pesquisar...",
       nothingSelected: "Selecionar ações"
   }  
   vm.ptbrFonte = {
-      selectAll: "Todos",
       selectNone: "Limpar",
       search: "Pesquisar...",
       nothingSelected: "Selecionar fontes"
   }  
   vm.ptbrSuspeito = {
-      selectAll: "Todos",
       selectNone: "Limpar",
       search: "Pesquisar...",
       nothingSelected: "Selecionar suspeitos"
@@ -195,6 +193,6 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts) {
   //FIM -- ANGULAR-MULTI-SELECT
 
 
-  vm.getBillingCycles()
+  vm.searchAlertas()
 
 }

@@ -1,0 +1,28 @@
+<div class="box-body">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Tipo de Ação</th>
+        <th>Número do BO</th>
+        <th>Data</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+
+        <tr ng-repeat="alerta in alertas">
+          <td ng-repeat-start="item in alerta.alertas">{{:: item.tipoAcao }}</td>
+          <td>{{:: item.numeroBo }}</td>
+          <td ng-repeat-end>{{:: item.dataOcorrencia }}</td>
+          <td style="width:100px;">
+            <button class="btn btn-warning" ng-click="showTabUpdate(billingCycle)"><i class="fa fa-pencil"></i></button>
+            <button class="btn btn-danger" ng-click="showTabDelete(billingCycle)"><i class="fa fa-trash-o"></i></button>
+          </td>
+        </tr>
+
+    </tbody>
+  </table>
+</div>
+<div class="box-footer clearfix">
+   <paginator url="/#!/billingCycles" pages="{{ pages }}"></paginator>
+</div>

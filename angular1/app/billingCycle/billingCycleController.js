@@ -14,6 +14,7 @@ function BillingCycleController($scope, $http, $location, msgs, tabs, consts) {
     const page = parseInt($location.search().page) || 1
     const url = `${consts.apiUrl}/billingCycles?skip=${(page - 1) * 10}&limit=10`
     $http.get(url).then(function(resp) {
+      console.log(resp.data)
       $scope.billingCycles = resp.data
       $scope.billingCycle = {}
       initCreditsAndDebts()
