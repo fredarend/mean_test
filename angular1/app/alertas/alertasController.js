@@ -26,12 +26,21 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
     })
   }
 
-  vm.createBillingCycle = function() {
-    const url = `${consts.apiUrl}/billingCycles`;
-    $http.post(url, vm.billingCycle).then(function(response) {
-      vm.billingCycle = {}
-      initCreditsAndDebts()
-      vm.getBillingCycles()
+  //INICIO -- DATE TIME PICKER
+
+  vm.dateTimeRange = function() {
+    $('#dataHora').datepicker({timePicker: true, timePickerIncrement: 30, format: 'dd/mm/yyyy'});
+    $('#timePicker').timepicker();
+  }
+
+  //FIM -- DATE TIME PICKER
+
+  vm.cadastrarAlerta = function() {
+    const url = `${consts.apiUrl}/acoes`;
+    $http.post(url, vm.alerta).then(function(response) {
+      vm.alerta = {}
+      //initCreditsAndDebts()
+      vm.searchAlertas()
       msgs.addSuccess('Operação realizada com sucesso!!')
     }).catch(function(resp) {
       msgs.addError(resp.data.errors)
@@ -141,14 +150,6 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
 
     vm.calculateValues()
   }
-
-  //INICIO -- DATE TIME PICKER
-
-  vm.dateTimeRange = function() {
-    $('#dataHora').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'DD/MM/YYYY h:mm A'});
-  }
-
-  //FIM -- DATE TIME PICKER
 
   //INICIO -- ANGULAR-MULTI-SELECT
 

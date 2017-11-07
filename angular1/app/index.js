@@ -3,6 +3,5 @@ angular.module('primeiraApp', [
   'ngAnimate',
   'toastr',
   'isteven-multi-select',
-  'leaflet-directive',
-  'ngTable'
+  'leaflet-directive'
 ])
