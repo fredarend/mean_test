@@ -15,12 +15,12 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
 
   vm.searchAlertas = function() {
     const page = parseInt($location.search().page) || 1
-    const url = `${consts.apiUrl}/acoes/searchAlertas/?skip=${(page - 1) * 10}&limit=10`
+    const url = `${consts.apiUrl}/acoes/searchAlertas`    
     $http.get(url).then(function(resp) {
       vm.alertas = resp.data
       vm.alerta = {}
       $http.get(`${consts.apiUrl}/acoes/countAlertas`).then(function(resp) {
-        vm.pages = Math.ceil(resp.data.value / 10)
+        vm.pages = Math.ceil(resp.data.value / 5)
         tabs.show(vm, {tabList: true, tabCreate: true})
       })
     })
@@ -202,16 +202,14 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
       vm.alertas = resp.data
       angular.forEach(vm.alertas, function(value, key){
 
-        vm.latitude = value.latitude
-        vm.longitude = value.longitude
+        vm.latitude = parseFloat(value.latitude)
+        vm.longitude = parseFloat(value.longitude)
 
         angular.forEach(value.alertas, function(value, key) {
           vm.tipoAcao = value.tipoAcao
           vm.fonte = value.fonte
 
           var message = vm.tipoAcao + '<br><br><span>Fonte: ' + vm.fonte + '</span>'
-          var icon = 'user'
-          var color = 'blue'
 
           vm.markers.push({
               group: "Santa Catarina",
@@ -221,8 +219,9 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
               icon: {
                   type: 'awesomeMarker',
                   prefix: 'fa',
-                  icon: icon,
-                  markerColor: color
+                  icon: 'exclamation',
+                  iconColor: 'white',
+                  markerColor: 'blue'
               },
               label: {
                   options: {
@@ -230,7 +229,6 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
                   }
               }
           });
-
         })
       })
     })

@@ -2,25 +2,23 @@
   <div class="col-md-12">
 
     <div class="col-md-6">
-      <leaflet defaults="defaults" lf-center="center" ng-init="buscaLatLong()" markers="vm.markers" width="100%" height="480px"></leaflet>
+      <leaflet class="leaflet_list_map" defaults="defaults" lf-center="center" ng-init="buscaLatLong()" markers="markers" width="100%" height="480px"></leaflet>
     </div>
 
     <div class="col-md-6">
-      <table class="table table-hover">
+      <table class="table table-striped">
         <thead>
           <tr>
             <th>Tipo de Ação</th>
-<!--             <th>Número do BO</th>
- -->            <th>Data</th>
+            <th>Data</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody>
 
             <tr ng-repeat="alerta in alertas">
-              <td ng-repeat-start="item in alerta.alertas">{{:: item.tipoAcao }}</td>
-<!--               <td>{{:: item.numeroBo }}</td>
- -->              <td ng-repeat-end>{{:: item.dataOcorrencia }}</td>
+              <td ng-repeat-start="item in alerta.alertas" at-implicit at-sortable at-attribute="tipoAcao">{{:: item.tipoAcao }}</td>
+              <td ng-repeat-end at-implicit at-sortable at-attribute="data" at-initial-sorting="asc">{{:: item.dataOcorrencia }}</td>
               <td style="width:100px;">
                 <button class="btn btn-warning" ng-click="showTabUpdate(billingCycle)"><i class="fa fa-pencil"></i></button>
                 <button class="btn btn-danger" ng-click="showTabDelete(billingCycle)"><i class="fa fa-trash-o"></i></button>
@@ -29,9 +27,9 @@
 
         </tbody>
       </table>
-      <div class="box-footer clearfix">
+<!--       <div class="box-footer clearfix">
          <paginator url="/#!/alertas" pages="{{ pages }}"></paginator>
-      </div>
+      </div> -->
     </div>
 
   </div>
