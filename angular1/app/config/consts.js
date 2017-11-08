@@ -1,7 +1,7 @@
 angular.module('primeiraApp').constant('consts', {
-  appName: 'MEAN - Primeira Aplicação',
+  appName: 'G-SEG Sistemas',
   version: '1.0',
-  owner: 'Cod3r',
+  owner: 'G-SEG',
   year: '2017',
   site: 'http://cod3r.com.br',
   apiUrl: 'http://localhost:3003/api',

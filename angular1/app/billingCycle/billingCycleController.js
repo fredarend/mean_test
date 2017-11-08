@@ -12,19 +12,21 @@ function BillingCycleController($scope, $http, $location, msgs, tabs, consts) {
 
   $scope.getBillingCycles = function() {
     const page = parseInt($location.search().page) || 1
-    const url = `${consts.apiUrl}/billingCycles?skip=${(page - 1) * 10}&limit=10`
+    const url = `${consts.apiUrl}/billingCycles?skip=${(page - 1) * 3}&limit=3`
     $http.get(url).then(function(resp) {
       $scope.billingCycles = resp.data
       $scope.billingCycle = {}
       initCreditsAndDebts()
       $http.get(`${consts.apiUrl}/billingCycles/count`).then(function(resp) {
-        $scope.pages = Math.ceil(resp.data.value / 10)
+        $scope.pages = Math.ceil(resp.data.value / 3)
         tabs.show($scope, {tabList: true, tabCreate: true})
       })
     })
   }
 
   $scope.createBillingCycle = function() {
+    console.log(billingCycle)
+    return null;
     const url = `${consts.apiUrl}/billingCycles`;
     $http.post(url, $scope.billingCycle).then(function(response) {
       $scope.billingCycle = {}

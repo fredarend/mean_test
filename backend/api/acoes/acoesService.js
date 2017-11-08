@@ -43,14 +43,24 @@ acoes.route('searchEventosDeRisco', function(req, res, next) {
       if(error) {
         res.status(500).json({errors: [error]})
       } else {
-        res.json({value})
+        res.json(value)
       }
   })
 })
 
-//EVENTOS DE RISCO. GT é utilizado para comparação.
+//ALERTAS.
 acoes.route('searchAlertas', function(req, res, next) {
-  acoes.find({ alertas: { $gt: [] } }, ' alertas suspeitos veiculos').sort('-created').exec(function(error, value) {
+  acoes.find({ alertas: { $gt: [] } }, 'latitude longitude alertas suspeitos veiculos').sort('-created').exec(function(error, value) {
+      if(error) {
+        res.status(500).json({errors: [error]})
+      } else {
+        res.json(value)
+      }
+  })
+})
+
+acoes.route('countAlertas', function(req, res, next) {
+  acoes.count({ alertas: { $gt: [] } }).count('alertas').exec(function(error, value) {
       if(error) {
         res.status(500).json({errors: [error]})
       } else {
@@ -59,13 +69,13 @@ acoes.route('searchAlertas', function(req, res, next) {
   })
 })
 
-//EVENTOS DE RISCO. GT é utilizado para comparação.
+//AÇÕES CRIMINOSAS.
 acoes.route('searchAcoesCriminosas', function(req, res, next) {
-	acoes.find({ acoesCriminosas: { $gt: [] } }, ' eventosDeRisco suspeitos veiculos').sort('-created').exec(function(error, value) {
+	acoes.find({ acoesCriminosas: { $gt: [] } }, ' acoesCriminosas suspeitos veiculos').sort('-created').exec(function(error, value) {
 	    if(error) {
 	      res.status(500).json({errors: [error]})
 	    } else {
-	      res.json({value})
+	      res.json(value)
 	    }
 	})
 })

@@ -5,33 +5,42 @@ angular.module('primeiraApp').controller('AlertasCtrl', [
   'msgs',
   'tabs',
   'consts',
+  'leafletData',
   AlertasController
 ])
 
-function AlertasController($scope, $http, $location, msgs, tabs, consts) {
+function AlertasController($scope, $http, $location, msgs, tabs, consts, leafletData) {
 
   var vm = $scope
 
-  vm.getBillingCycles = function() {
+  vm.searchAlertas = function() {
     const page = parseInt($location.search().page) || 1
-    const url = `${consts.apiUrl}/billingCycles?skip=${(page - 1) * 10}&limit=10`
+    const url = `${consts.apiUrl}/acoes/searchAlertas`    
     $http.get(url).then(function(resp) {
-      vm.billingCycles = resp.data
-      vm.billingCycle = {}
-      initCreditsAndDebts()
-      $http.get(`${consts.apiUrl}/billingCycles/count`).then(function(resp) {
-        vm.pages = Math.ceil(resp.data.value / 10)
+      vm.alertas = resp.data
+      vm.alerta = {}
+      $http.get(`${consts.apiUrl}/acoes/countAlertas`).then(function(resp) {
+        vm.pages = Math.ceil(resp.data.value / 5)
         tabs.show(vm, {tabList: true, tabCreate: true})
       })
     })
   }
 
-  vm.createBillingCycle = function() {
-    const url = `${consts.apiUrl}/billingCycles`;
-    $http.post(url, vm.billingCycle).then(function(response) {
-      vm.billingCycle = {}
-      initCreditsAndDebts()
-      vm.getBillingCycles()
+  //INICIO -- DATE TIME PICKER
+
+  vm.dateTimeRange = function() {
+    $('#dataHora').datepicker({timePicker: true, timePickerIncrement: 30, format: 'dd/mm/yyyy'});
+    $('#timePicker').timepicker();
+  }
+
+  //FIM -- DATE TIME PICKER
+
+  vm.cadastrarAlerta = function() {
+    const url = `${consts.apiUrl}/acoes`;
+    $http.post(url, vm.alerta).then(function(response) {
+      vm.alerta = {}
+      //initCreditsAndDebts()
+      vm.searchAlertas()
       msgs.addSuccess('Operação realizada com sucesso!!')
     }).catch(function(resp) {
       msgs.addError(resp.data.errors)
@@ -127,6 +136,7 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts) {
     vm.total = vm.credit - vm.debt
   }
 
+
   var initCreditsAndDebts = function() {
     if(!vm.billingCycle.debts || !vm.billingCycle.debts.length) {
       vm.billingCycle.debts = []
@@ -141,30 +151,19 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts) {
     vm.calculateValues()
   }
 
-  //INICIO -- DATE TIME PICKER
-
-  vm.dateTimeRange = function() {
-    $('#dataHora').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'DD/MM/YYYY h:mm A'});
-  }
-
-  //FIM -- DATE TIME PICKER
-
   //INICIO -- ANGULAR-MULTI-SELECT
 
   vm.ptbrAcao = {
-      selectAll: "Todos",
       selectNone: "Limpar",
       search: "Pesquisar...",
       nothingSelected: "Selecionar ações"
   }  
   vm.ptbrFonte = {
-      selectAll: "Todos",
       selectNone: "Limpar",
       search: "Pesquisar...",
       nothingSelected: "Selecionar fontes"
   }  
   vm.ptbrSuspeito = {
-      selectAll: "Todos",
       selectNone: "Limpar",
       search: "Pesquisar...",
       nothingSelected: "Selecionar suspeitos"
@@ -194,7 +193,84 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts) {
   
   //FIM -- ANGULAR-MULTI-SELECT
 
+  //MAPA 
 
-  vm.getBillingCycles()
+  vm.markers = new Array();
+
+  vm.buscaLatLong = function() {
+    const url = `${consts.apiUrl}/acoes/searchAlertas/`
+    $http.get(url).then(function(resp) {
+      vm.alertas = resp.data
+      angular.forEach(vm.alertas, function(value, key){
+
+        vm.latitude = parseFloat(value.latitude)
+        vm.longitude = parseFloat(value.longitude)
+
+        angular.forEach(value.alertas, function(value, key) {
+          vm.tipoAcao = value.tipoAcao
+          vm.fonte = value.fonte
+
+          var message = vm.tipoAcao + '<br><br><span>Fonte: ' + vm.fonte + '</span>'
+
+          vm.markers.push({
+              group: "Santa Catarina",
+              lat: vm.latitude,
+              lng: vm.longitude,
+              message: message,
+              icon: {
+                  type: 'awesomeMarker',
+                  prefix: 'fa',
+                  icon: 'exclamation',
+                  iconColor: 'white',
+                  markerColor: 'blue'
+              },
+              label: {
+                  options: {
+                      noHide: true
+                  }
+              }
+          });
+        })
+      })
+    })
+  }
+
+
+  angular.extend(vm, { // EXTENDE AS PROPRIEDADES DO MAP (MARCADORES, LOCALIZAÇÃO INCIAL..)
+      center: { // LOCALIZAÇÃO INICIAL  .
+          lat: -27.226548,
+          lng: -52.018311,
+          zoom: 17
+      },
+      markers: vm.markers,
+      defaults: {
+          tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          zoomControlPosition: 'topright',
+          tileLayerOptions: {
+              opacity: 0.9,
+              detectRetina: true,
+              reuseTiles: true,
+              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> | &copy <a href="http://www.openstreetmap.org/copyright">GSEG Sistemas</a>',
+          },
+          scrollWheelZoom: true,
+          minZoom: 3,
+          worldCopyJump: true
+      }
+  });
+
+  vm.ajustarMapa = function() {
+      leafletData.getMap().then(function(map) {
+          setTimeout(function() {
+              map.invalidateSize();
+              map._resetView(map.getCenter(), map.getZoom(), true);   
+              map.fire('layeradd', {layer: this});
+
+          }, 200);
+      });
+  };
+
+  vm.ajustarMapa();
+
+  vm.searchAlertas()
 
 }
