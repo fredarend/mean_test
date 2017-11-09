@@ -36,8 +36,13 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
   //FIM -- DATE TIME PICKER
 
   vm.cadastrarAlerta = function() {
+
+    console.log(vm.alerta)
+
     const url = `${consts.apiUrl}/acoes`;
     $http.post(url, vm.alerta).then(function(response) {
+      console.log(response.data)
+      return null
       vm.alerta = {}
       //initCreditsAndDebts()
       vm.searchAlertas()
@@ -169,27 +174,28 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
       nothingSelected: "Selecionar suspeitos"
   }        
 
+  vm.suspeitos = [
+      { name: "Super Homem"  },
+      { name: "Batman"  },
+      { name: "Homem Aranha"  }
+  ];
+
   vm.tipoAlerta = [
-      { name: "Furto", ticked: false  },
-      { name: "Roubo armado", ticked: false  },
-      { name: "Furto com maçarico", ticked: false  },
-      { name: "Roubo com furadeira", ticked: false  },
-      { name: "Roubo com explosivo", ticked: false  },
-      { name: "Roubo armado", ticked: false  },
-      { name: "Estelionato", ticked: false  }
+      { name: "Furto"  },
+      { name: "Roubo armado"  },
+      { name: "Furto com maçarico"  },
+      { name: "Roubo com furadeira"  },
+      { name: "Roubo com explosivo"  },
+      { name: "Roubo armado"  },
+      { name: "Estelionato"  }
   ];
 
   vm.fonteAlerta = [
-      { name: "Polícia Militar", ticked: false  },
-      { name: "Polícia Civil", ticked: false  },
-      { name: "Gerente", ticked: false  }
+      { name: "Polícia Militar"  },
+      { name: "Polícia Civil"  },
+      { name: "Gerente"  }
   ];
 
-  vm.suspeito = [
-      { name: "Joaquín Guzmán", maker: "(El Chapo)", ticked: false  },
-      { name: "Fernandinho Beiramar", ticked: false  },
-      { name: "Pablo Escobar", ticked: false  }
-  ];
   
   //FIM -- ANGULAR-MULTI-SELECT
 

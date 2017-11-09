@@ -1,7 +1,7 @@
 <div role="form">
   <div class="box-body">
 
-    <div class="col-xs-12 col-md-6 col-lg-6">
+<!--     <div class="col-xs-12 col-md-6 col-lg-6">
       <div class="form-group">
         <label>Tipo de Ação:</label>
         <div class="form-group">
@@ -9,7 +9,7 @@
               isteven-multi-select
               translation="ptbrAcao" 
               input-model="tipoAlerta"
-              output-model="alerta.tipoAcao"
+              output-model="alerta.alertas.tipoAcao"
               button-label="icon name"
               item-label="icon name maker"
               tick-property="ticked"
@@ -17,7 +17,8 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
+
 
     <div class="col-xs-12 col-md-6 col-lg-6">
       <div class="form-group">
@@ -44,8 +45,8 @@
           <div     
             isteven-multi-select
             translation="ptbrSuspeito" 
-            input-model="suspeito"
-            output-model="alerta.suspeito"
+            input-model="suspeitos"
+            output-model="alerta.suspeitos.nome"
             button-label="icon name"
             item-label="icon name maker"
             tick-property="ticked"
@@ -83,7 +84,7 @@
     <field id="billingCycleClientId" label="Número do BO" model="alerta.numBo"
          placeholder="Informe o Número do BO" grid="12 6 6" type="number" readonly="tabDelete"></field>
 
-    <field id="billingCycleType" label="Relato da Ocorrência" model="alerta.relatoOcorrencia"
+    <field id="billingCycleType" label="Relato da Ocorrência" model="alerta.relato"
          placeholder="Relate a ocorrência" grid="12 6 6" readonly="tabDelete"></field>
 
     <field id="billingCycleType" label="Módus" model="alerta.modus"

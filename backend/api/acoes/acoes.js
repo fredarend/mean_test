@@ -4,7 +4,7 @@ const mongoose = restful.mongoose
 
 // SUSPEITOS - INICIO //
 const suspeitosSchema = new mongoose.Schema({
-  nome: { type: String, required: true },
+  name: { type: Array },
   sexo: { type: String },
   corPele: { type: String },
   altura: { type: String },
@@ -28,51 +28,35 @@ const veiculosSchema = new mongoose.Schema({
 
 // ALERTAS - INICIO //
 const alertasSchema = new mongoose.Schema({
-  tipoAcao: { type: String },
-  fonte: { type: String },
-  bo: { type: String },
-  numeroBo: { type: Number },
-  imagem: { type: String },
-  relato: { type: String },
-  modus: { type: String },
-  falhasApuradas: { type: String },
-  dataOcorrencia: { type: Date }  
+  tipoAcao: { type: String }
 })
 
 
 // AÇÕES CRIMINOSAS - INICIO //
 const acoesCriminosasSchema = new mongoose.Schema({
-  tipoAcao: { type: String },
-  fonte: { type: String },
-  bo: { type: String },
-  numeroBo: { type: Number },
-  imagem: { type: String },
-  relato: { type: String },
-  modus: { type: String },
-  falhasApuradas: { type: String },
-  dataOcorrencia: { type: Date } 
+  tipoAcao: { type: String }
 })
 
 
 // EVENTOS DE RISCO - INICIO //
 const eventosDeRiscoSchema = new mongoose.Schema({
-  tipoEvento: { type: String },
-  fonte: { type: String },
-  bo: { type: String },
-  numeroBo: { type: Number },
-  imagem: { type: String },
-  relato: { type: String },
-  modus: { type: String },
-  falhasApuradas: { type: String },
-  dataOcorrencia: { type: Date } 
+  tipoEvento: { type: String }
 })
 
 
 // ACOES //
 const acoesSchema = new mongoose.Schema({
   dataCadastro: { type: Date, default: Date.now },
-  latitude: { type: String, required: true },
-  longitude: { type: String, required: true },
+  fonte: { type: Array },
+  bo: { type: String },
+  numeroBo: { type: Number },
+  imagem: { type: String },
+  relato: { type: String },
+  modus: { type: String },
+  falhasApuradas: { type: String },
+  dataOcorrencia: { type: Date }, 
+  latitude: { type: String },
+  longitude: { type: String },
   suspeitos: [suspeitosSchema],
   veiculos: [veiculosSchema],
   alertas: [alertasSchema],
