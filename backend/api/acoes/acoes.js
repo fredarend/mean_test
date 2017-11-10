@@ -28,19 +28,19 @@ const veiculosSchema = new mongoose.Schema({
 
 // ALERTAS - INICIO //
 const alertasSchema = new mongoose.Schema({
-  tipoAcao: { type: String }
+  tipoAcao: { type: Array }
 })
 
 
 // AÇÕES CRIMINOSAS - INICIO //
 const acoesCriminosasSchema = new mongoose.Schema({
-  tipoAcao: { type: String }
+  tipoAcao: { type: Array }
 })
 
 
 // EVENTOS DE RISCO - INICIO //
 const eventosDeRiscoSchema = new mongoose.Schema({
-  tipoEvento: { type: String }
+  tipoEvento: { type: Array }
 })
 
 
@@ -55,8 +55,8 @@ const acoesSchema = new mongoose.Schema({
   modus: { type: String },
   falhasApuradas: { type: String },
   dataOcorrencia: { type: Date }, 
-  latitude: { type: String },
-  longitude: { type: String },
+  latitude: { type: String, default: '-27.226520' },
+  longitude: { type: String, default: '-52.018375' },
   suspeitos: [suspeitosSchema],
   veiculos: [veiculosSchema],
   alertas: [alertasSchema],

@@ -6,10 +6,12 @@ angular.module('primeiraApp').controller('AlertasCtrl', [
   'tabs',
   'consts',
   'leafletData',
+  '$timeout',
+  "leafletMarkerEvents",
   AlertasController
 ])
 
-function AlertasController($scope, $http, $location, msgs, tabs, consts, leafletData) {
+function AlertasController($scope, $http, $location, msgs, tabs, consts, leafletData, $timeout, leafletMarkerEvents) {
 
   var vm = $scope
 
@@ -17,7 +19,22 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
     const page = parseInt($location.search().page) || 1
     const url = `${consts.apiUrl}/acoes/searchAlertas`    
     $http.get(url).then(function(resp) {
+
       vm.alertas = resp.data
+      vm.final = new Array()
+      angular.forEach(vm.alertas, function(value, key){
+          vm.alert = value.alertas
+          angular.forEach(vm.alert, function(value, key){
+            vm.acoes = value.tipoAcao
+            angular.forEach(vm.acoes, function(value, key){ 
+              vm.tipoAcao = value.name
+            })
+          })     
+          vm.final.push(vm.tipoAcao)
+          console.log(vm.final)
+      })
+
+
       vm.alerta = {}
       $http.get(`${consts.apiUrl}/acoes/countAlertas`).then(function(resp) {
         vm.pages = Math.ceil(resp.data.value / 5)
@@ -34,15 +51,66 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
   }
 
   //FIM -- DATE TIME PICKER
+  vm.marcarPosicaoAcao = function() {
+
+    vm.markers2 = {
+        sicoob: {
+            lat: -27.226785483109737,
+            lng: -52.01850950717926,
+            draggable: true,
+            icon: {
+                type: 'awesomeMarker',
+                prefix: 'fa',
+                icon: 'exclamation',
+                iconColor: 'white',
+                markerColor: 'blue'
+            },
+            focus: true
+        }
+    };
+
+    vm.events2 = {
+        markers: {
+            enable: leafletMarkerEvents.getAvailableEvents(),
+        }
+    };
+
+    vm.eventDetected = "No events yet...";
+    var markerEvents = leafletMarkerEvents.getAvailableEvents();
+    for (var k in markerEvents){
+        var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
+        vm.$on(eventName, function(event, args){
+            vm.eventDetected = event.name;
+        });
+    }
+  }
+
+  angular.extend(vm, { // EXTENDE AS PROPRIEDADES DO MAP (MARCADORES, LOCALIZAÇÃO INCIAL..)
+      center2: { // LOCALIZAÇÃO INICIAL  .
+          lat: -27.226548,
+          lng: -52.018311,
+          zoom: 17
+      },
+      markers2: vm.markers2,
+      defaults2: {
+          tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          zoomControlPosition: 'topright',
+          tileLayerOptions: {
+              opacity: 0.9,
+              detectRetina: true,
+              reuseTiles: true,
+              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> | &copy <a href="http://www.openstreetmap.org/copyright">GSEG Sistemas</a>',
+          },
+          scrollWheelZoom: true,
+          minZoom: 3,
+          worldCopyJump: true
+      }
+  });
+
 
   vm.cadastrarAlerta = function() {
-
-    console.log(vm.alerta)
-
     const url = `${consts.apiUrl}/acoes`;
     $http.post(url, vm.alerta).then(function(response) {
-      console.log(response.data)
-      return null
       vm.alerta = {}
       //initCreditsAndDebts()
       vm.searchAlertas()
@@ -159,16 +227,19 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
   //INICIO -- ANGULAR-MULTI-SELECT
 
   vm.ptbrAcao = {
+      selectAll: "Todos",
       selectNone: "Limpar",
       search: "Pesquisar...",
       nothingSelected: "Selecionar ações"
   }  
   vm.ptbrFonte = {
+      selectAll: "Todos",
       selectNone: "Limpar",
       search: "Pesquisar...",
       nothingSelected: "Selecionar fontes"
   }  
   vm.ptbrSuspeito = {
+      selectAll: "Todos",
       selectNone: "Limpar",
       search: "Pesquisar...",
       nothingSelected: "Selecionar suspeitos"
@@ -213,8 +284,8 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
         vm.longitude = parseFloat(value.longitude)
 
         angular.forEach(value.alertas, function(value, key) {
-          vm.tipoAcao = value.tipoAcao
-          vm.fonte = value.fonte
+          vm.tipoAcao = "Estelionato"
+          vm.fonte = "Gerente"
 
           var message = vm.tipoAcao + '<br><br><span>Fonte: ' + vm.fonte + '</span>'
 
@@ -241,6 +312,10 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
     })
   }
 
+  vm.$on('$destroy', function () { 
+      console.log("destruiu")
+      leafletMarkersHelpers.resetCurrentGroups(); 
+  });
 
   angular.extend(vm, { // EXTENDE AS PROPRIEDADES DO MAP (MARCADORES, LOCALIZAÇÃO INCIAL..)
       center: { // LOCALIZAÇÃO INICIAL  .
@@ -275,8 +350,7 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
       });
   };
 
-  vm.ajustarMapa();
-
+  vm.ajustarMapa()
   vm.searchAlertas()
 
 }
