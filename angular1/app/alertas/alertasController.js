@@ -16,13 +16,20 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
   var vm = $scope
 
   vm.searchAlertas = function() {
+
+    vm.$on('$destroy', function () { 
+        leafletMarkersHelpers.resetCurrentGroups(); 
+    });
+
     const page = parseInt($location.search().page) || 1
     const url = `${consts.apiUrl}/acoes/searchAlertas`    
     $http.get(url).then(function(resp) {
 
       vm.alertas = resp.data
+
       vm.final = new Array()
       angular.forEach(vm.alertas, function(value, key){
+          vm.numBo = value.numeroBo
           vm.alert = value.alertas
           angular.forEach(vm.alert, function(value, key){
             vm.acoes = value.tipoAcao
@@ -30,8 +37,8 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
               vm.tipoAcao = value.name
             })
           })     
-          vm.final.push(vm.tipoAcao)
-          console.log(vm.final)
+          vm.final.push([vm.tipoAcao, vm.numBo])
+          console.log(vm.final.)
       })
 
 
@@ -40,6 +47,18 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
         vm.pages = Math.ceil(resp.data.value / 5)
         tabs.show(vm, {tabList: true, tabCreate: true})
       })
+    })
+  }
+
+  vm.cadastrarAlerta = function() {
+
+    const url = `${consts.apiUrl}/acoes`;
+    $http.post(url, vm.alerta).then(function(response) {
+      vm.alerta = {}
+      msgs.addSuccess('Operação realizada com sucesso!!')
+      location.reload();
+    }).catch(function(resp) {
+      msgs.addError(resp.data.errors)
     })
   }
 
@@ -83,6 +102,12 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
             vm.eventDetected = event.name;
         });
     }
+
+    vm.$on("leafletDirectiveMarker.dragend", function(event, args){
+        vm.alerta.latitude = args.model.lat;
+        vm.alerta.longitude = args.model.lng;
+    });
+
   }
 
   angular.extend(vm, { // EXTENDE AS PROPRIEDADES DO MAP (MARCADORES, LOCALIZAÇÃO INCIAL..)
@@ -107,121 +132,10 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
       }
   });
 
-
-  vm.cadastrarAlerta = function() {
-    const url = `${consts.apiUrl}/acoes`;
-    $http.post(url, vm.alerta).then(function(response) {
-      vm.alerta = {}
-      //initCreditsAndDebts()
-      vm.searchAlertas()
-      msgs.addSuccess('Operação realizada com sucesso!!')
-    }).catch(function(resp) {
-      msgs.addError(resp.data.errors)
-    })
-  }
-
-  vm.showTabUpdate = function(billingCycle) {
-    vm.billingCycle = billingCycle
-    initCreditsAndDebts()
-    tabs.show(vm, {tabUpdate: true})
-  }
-
-  vm.updateBillingCycle = function() {
-    const url = `${consts.apiUrl}/billingCycles/${vm.billingCycle._id}`
-    $http.put(url, vm.billingCycle).then(function(response) {
-      vm.billingCycle = {}
-      initCreditsAndDebts()
-      vm.getBillingCycles()
-      tabs.show(vm, {tabList: true, tabCreate: true})
-      msgs.addSuccess('Operação realizada com sucesso!')
-    }).catch(function(resp) {
-      msgs.addError(resp.data.errors)
-    })
-  }
-
-  vm.showTabDelete = function(billingCycle) {
-    vm.billingCycle = billingCycle
-    initCreditsAndDebts()
-    tabs.show(vm, {tabDelete: true})
-  }
-
-  vm.deleteBillingCycle = function() {
-    const url = `${consts.apiUrl}/billingCycles/${vm.billingCycle._id}`
-    $http.delete(url, vm.billingCycle).then(function(response) {
-       vm.billingCycle = {}
-       initCreditsAndDebts()
-       vm.getBillingCycles()
-       tabs.show(vm, {tabList: true, tabCreate: true})
-       msgs.addSuccess('Operação realizada com sucesso!')
-    }).catch(function(resp) {
-       msgs.addError(resp.data)
-    })
-  }
-
-  vm.addDebt = function(index) {
-    vm.billingCycle.debts.splice(index + 1, 0, {})
-  }
-
-  vm.cloneDebt = function(index, {name, value, status}) {
-    vm.billingCycle.debts.splice(index + 1, 0, {name, value, status})
-    initCreditsAndDebts()
-  }
-
-  vm.deleteDebt = function(index) {
-    vm.billingCycle.debts.splice(index, 1)
-    initCreditsAndDebts()
-  }
-
-  vm.addCredit = function(index) {
-    vm.billingCycle.credits.splice(index + 1, 0, {name: null, value: null})
-  }
-
-  vm.cloneCredit = function(index, {name, value}) {
-    vm.billingCycle.credits.splice(index + 1, 0, {name, value})
-    initCreditsAndDebts()
-  }
-
-  vm.deleteCredit = function(index) {
-    vm.billingCycle.credits.splice(index, 1)
-    initCreditsAndDebts()
-  }
-
   vm.cancel = function() {
     tabs.show(vm, {tabList: true, tabCreate: true})
     vm.billingCycle = {}
     initCreditsAndDebts()
-  }
-
-  vm.calculateValues = function() {
-    vm.credit = 0
-    vm.debt = 0
-
-    if(vm.billingCycle) {
-      vm.billingCycle.credits.forEach(function({value}) {
-        vm.credit += !value || isNaN(value) ? 0 : parseFloat(value)
-      })
-
-      vm.billingCycle.debts.forEach(function({value}) {
-        vm.debt += !value || isNaN(value) ? 0 : parseFloat(value)
-      })
-    }
-
-    vm.total = vm.credit - vm.debt
-  }
-
-
-  var initCreditsAndDebts = function() {
-    if(!vm.billingCycle.debts || !vm.billingCycle.debts.length) {
-      vm.billingCycle.debts = []
-      vm.billingCycle.debts.push({})
-    }
-
-    if(!vm.billingCycle.credits || !vm.billingCycle.credits.length) {
-      vm.billingCycle.credits = []
-      vm.billingCycle.credits.push({})
-    }
-
-    vm.calculateValues()
   }
 
   //INICIO -- ANGULAR-MULTI-SELECT
@@ -313,7 +227,6 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
   }
 
   vm.$on('$destroy', function () { 
-      console.log("destruiu")
       leafletMarkersHelpers.resetCurrentGroups(); 
   });
 

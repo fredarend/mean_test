@@ -9,13 +9,15 @@
       <table class="table table-striped">
         <thead>
           <tr>
+            <th>BO</th>
             <th>Tipo de Ação</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody>
 
-            <tr ng-repeat="acao in final">
+            <tr ng-repeat="acao in final track by $index">
+              <td>{{:: acao }}</td>
               <td>{{:: acao }}</td>
               <td style="width:100px;">
                 <button class="btn btn-warning" ng-click="showTabUpdate(billingCycle)"><i class="fa fa-pencil"></i></button>

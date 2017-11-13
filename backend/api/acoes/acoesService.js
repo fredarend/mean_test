@@ -39,7 +39,7 @@ acoes.route('count', function(req, res, next) {
 
 //EVENTOS DE RISCO. GT é utilizado para comparação.
 acoes.route('searchEventosDeRisco', function(req, res, next) {
-  acoes.find({ eventosDeRisco: { $gt: [] } }, ' eventosDeRisco suspeitos veiculos').sort('-created').exec(function(error, value) {
+  acoes.find({ eventosDeRisco: { $gt: [] } }, ' eventosDeRisco suspeitos veiculos fonte numeroBo').sort('-created').exec(function(error, value) {
       if(error) {
         res.status(500).json({errors: [error]})
       } else {
@@ -50,7 +50,7 @@ acoes.route('searchEventosDeRisco', function(req, res, next) {
 
 //ALERTAS.
 acoes.route('searchAlertas', function(req, res, next) {
-  acoes.find({ alertas: { $gt: [] } }, 'latitude longitude alertas suspeitos veiculos').sort('-created').exec(function(error, value) {
+  acoes.find({ alertas: { $gt: [] } }, 'latitude longitude alertas suspeitos veiculos fonte numeroBo').sort('-created').exec(function(error, value) {
       if(error) {
         res.status(500).json({errors: [error]})
       } else {
