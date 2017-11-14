@@ -5,16 +5,11 @@
       <div class="form-group">
         <label>Tipo de Ação:</label>
         <div class="form-group">
-          <div     
-              isteven-multi-select
-              translation="ptbrAcao" 
-              input-model="tipoAlerta"
-              output-model="alerta.alertas.tipoAcao"
-              button-label="icon name"
-              item-label="icon name maker"
-              tick-property="ticked"
-          >
-          </div>
+          <select class="form-control" ng-model="alerta.tipoAcao">
+            <option ng-repeat="item in tipoAcoes" value="{{item.name}}">
+              {{item.name}}
+            </option>
+          </select>
         </div>
       </div>
     </div>

@@ -15,16 +15,14 @@
           </tr>
         </thead>
         <tbody>
-
-            <tr ng-repeat="acao in final track by $index">
-              <td>{{:: acao }}</td>
-              <td>{{:: acao }}</td>
+            <tr ng-repeat="item in alertas"> 
+              <td>{{:: item.numeroBo}}</td>
+              <td>{{:: item.tipoAcao}}</td>
               <td style="width:100px;">
                 <button class="btn btn-warning" ng-click="showTabUpdate(billingCycle)"><i class="fa fa-pencil"></i></button>
                 <button class="btn btn-danger" ng-click="showTabDelete(billingCycle)"><i class="fa fa-trash-o"></i></button>
               </td>
             </tr>
-
         </tbody>
       </table>
 <!--       <div class="box-footer clearfix">
@@ -35,3 +33,5 @@
   </div>
 
 </div>
+
+

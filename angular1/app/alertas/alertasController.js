@@ -16,32 +16,13 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
   var vm = $scope
 
   vm.searchAlertas = function() {
-
     vm.$on('$destroy', function () { 
         leafletMarkersHelpers.resetCurrentGroups(); 
     });
-
     const page = parseInt($location.search().page) || 1
     const url = `${consts.apiUrl}/acoes/searchAlertas`    
     $http.get(url).then(function(resp) {
-
       vm.alertas = resp.data
-
-      vm.final = new Array()
-      angular.forEach(vm.alertas, function(value, key){
-          vm.numBo = value.numeroBo
-          vm.alert = value.alertas
-          angular.forEach(vm.alert, function(value, key){
-            vm.acoes = value.tipoAcao
-            angular.forEach(vm.acoes, function(value, key){ 
-              vm.tipoAcao = value.name
-            })
-          })     
-          vm.final.push([vm.tipoAcao, vm.numBo])
-          console.log(vm.final.)
-      })
-
-
       vm.alerta = {}
       $http.get(`${consts.apiUrl}/acoes/countAlertas`).then(function(resp) {
         vm.pages = Math.ceil(resp.data.value / 5)
@@ -51,7 +32,6 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
   }
 
   vm.cadastrarAlerta = function() {
-
     const url = `${consts.apiUrl}/acoes`;
     $http.post(url, vm.alerta).then(function(response) {
       vm.alerta = {}
@@ -165,15 +145,15 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
       { name: "Homem Aranha"  }
   ];
 
-  vm.tipoAlerta = [
-      { name: "Furto"  },
-      { name: "Roubo armado"  },
-      { name: "Furto com maçarico"  },
-      { name: "Roubo com furadeira"  },
-      { name: "Roubo com explosivo"  },
-      { name: "Roubo armado"  },
-      { name: "Estelionato"  }
-  ];
+  vm.tipoAcoes = [
+    { name: "Furto"  },
+    { name: "Roubo armado"  },
+    { name: "Furto com maçarico"  },
+    { name: "Roubo com furadeira"  },
+    { name: "Roubo com explosivo"  },
+    { name: "Roubo armado"  },
+    { name: "Estelionato"  }
+  ]
 
   vm.fonteAlerta = [
       { name: "Polícia Militar"  },
@@ -196,32 +176,30 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
 
         vm.latitude = parseFloat(value.latitude)
         vm.longitude = parseFloat(value.longitude)
+        vm.tipoAcao = value.tipoAcao
 
-        angular.forEach(value.alertas, function(value, key) {
-          vm.tipoAcao = "Estelionato"
-          vm.fonte = "Gerente"
+        var message = vm.tipoAcao
 
-          var message = vm.tipoAcao + '<br><br><span>Fonte: ' + vm.fonte + '</span>'
+        vm.markers.push({
+            group: "Santa Catarina",
+            lat: vm.latitude,
+            lng: vm.longitude,
+            message: message,
+            icon: {
+                type: 'awesomeMarker',
+                prefix: 'fa',
+                icon: 'exclamation',
+                iconColor: 'white',
+                markerColor: 'blue'
+            },
+            label: {
+                options: {
+                    noHide: true
+                }
+            }
+        });
+        console.log(vm.markers)
 
-          vm.markers.push({
-              group: "Santa Catarina",
-              lat: vm.latitude,
-              lng: vm.longitude,
-              message: message,
-              icon: {
-                  type: 'awesomeMarker',
-                  prefix: 'fa',
-                  icon: 'exclamation',
-                  iconColor: 'white',
-                  markerColor: 'blue'
-              },
-              label: {
-                  options: {
-                      noHide: true
-                  }
-              }
-          });
-        })
       })
     })
   }
