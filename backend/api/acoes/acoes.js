@@ -40,21 +40,19 @@ const eventosDeRiscoSchema = new mongoose.Schema({
 // ACOES //
 const acoesSchema = new mongoose.Schema({
   dataCadastro: { type: Date, default: Date.now },
-  fonte: { type: Array },
-  bo: { type: String },
-  numeroBo: { type: Number },
+  fonte: { type: Array, required: true },
+  bo: { type: String, required: true },
+  numeroBo: { type: Number, required: true },
   imagem: { type: String },
-  relato: { type: String },
-  modus: { type: String },
-  falhasApuradas: { type: String },
+  relato: { type: String, required: true },
+  modus: { type: String, required: true },
+  falhasApuradas: { type: String, required: true },
   dataOcorrencia: { type: Date }, 
   latitude: { type: String, default: '-27.226520' },
   longitude: { type: String, default: '-52.018375' },
   suspeitos: [suspeitosSchema],
   veiculos: [veiculosSchema],
-  tipoAcao: { type: String, required: true },
-  acoesCriminosas: [acoesCriminosasSchema],
-  eventosDeRisco: [eventosDeRiscoSchema]
+  tipoAcao: { type: String, required: true, required: true }
 })
 
 module.exports = restful.model('acoes', acoesSchema)

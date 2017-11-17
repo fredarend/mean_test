@@ -7,18 +7,23 @@ angular.module('primeiraApp').controller('AlertasCtrl', [
   'consts',
   'leafletData',
   '$timeout',
-  "leafletMarkerEvents",
+  'leafletMarkerEvents',
+  'leafletMarkersHelpers',
   AlertasController
 ])
 
-function AlertasController($scope, $http, $location, msgs, tabs, consts, leafletData, $timeout, leafletMarkerEvents) {
+function AlertasController($scope, $http, $location, msgs, tabs, consts, leafletData, $timeout, leafletMarkerEvents, leafletMarkersHelpers) {
 
   var vm = $scope
 
+
+  //TODA VEZ QUE TROCAR A ROTA DEVE-SE CHAMAR ESSA FUNÇÃO PARA RESETAR OS MARCADORES.
+  vm.$on('$destroy', function () { 
+      leafletMarkersHelpers.resetMarkerGroups(); 
+  });
+
   vm.searchAlertas = function() {
-    vm.$on('$destroy', function () { 
-        leafletMarkersHelpers.resetCurrentGroups(); 
-    });
+    vm.ajustarMapa()
     const page = parseInt($location.search().page) || 1
     const url = `${consts.apiUrl}/acoes/searchAlertas`    
     $http.get(url).then(function(resp) {
@@ -32,6 +37,8 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
   }
 
   vm.cadastrarAlerta = function() {
+    console.log(vm.alerta)
+    return null
     const url = `${consts.apiUrl}/acoes`;
     $http.post(url, vm.alerta).then(function(response) {
       vm.alerta = {}
@@ -114,8 +121,8 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
 
   vm.cancel = function() {
     tabs.show(vm, {tabList: true, tabCreate: true})
-    vm.billingCycle = {}
-    initCreditsAndDebts()
+    vm.searchAlertas()
+    vm.alerta = {}
   }
 
   //INICIO -- ANGULAR-MULTI-SELECT
@@ -198,16 +205,10 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
                 }
             }
         });
-        console.log(vm.markers)
-
       })
     })
   }
-
-  vm.$on('$destroy', function () { 
-      leafletMarkersHelpers.resetCurrentGroups(); 
-  });
-
+ 
   angular.extend(vm, { // EXTENDE AS PROPRIEDADES DO MAP (MARCADORES, LOCALIZAÇÃO INCIAL..)
       center: { // LOCALIZAÇÃO INICIAL  .
           lat: -27.226548,
@@ -231,6 +232,7 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
   });
 
   vm.ajustarMapa = function() {
+      vm.dateTimeRange()
       leafletData.getMap().then(function(map) {
           setTimeout(function() {
               map.invalidateSize();
