@@ -40,14 +40,14 @@ const eventosDeRiscoSchema = new mongoose.Schema({
 // ACOES //
 const acoesSchema = new mongoose.Schema({
   dataCadastro: { type: Date, default: Date.now },
-  fonte: { type: Array, required: true },
-  bo: { type: String, required: true },
+  fonte: { type: Array, required: true },/*
+  bo: { type: String },*/
   numeroBo: { type: Number, required: true },
   imagem: { type: String },
   relato: { type: String, required: true },
   modus: { type: String, required: true },
   falhasApuradas: { type: String, required: true },
-  dataOcorrencia: { type: Date }, 
+  data: { type: Date, required: true }, 
   latitude: { type: String, default: '-27.226520' },
   longitude: { type: String, default: '-52.018375' },
   suspeitos: [suspeitosSchema],

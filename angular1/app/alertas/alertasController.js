@@ -38,7 +38,6 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
 
   vm.cadastrarAlerta = function() {
     console.log(vm.alerta)
-    return null
     const url = `${consts.apiUrl}/acoes`;
     $http.post(url, vm.alerta).then(function(response) {
       vm.alerta = {}
@@ -49,14 +48,6 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
     })
   }
 
-  //INICIO -- DATE TIME PICKER
-
-  vm.dateTimeRange = function() {
-    $('#dataHora').datepicker({timePicker: true, timePickerIncrement: 30, format: 'dd/mm/yyyy'});
-    $('#timePicker').timepicker();
-  }
-
-  //FIM -- DATE TIME PICKER
   vm.marcarPosicaoAcao = function() {
 
     vm.markers2 = {
@@ -120,9 +111,7 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
   });
 
   vm.cancel = function() {
-    tabs.show(vm, {tabList: true, tabCreate: true})
-    vm.searchAlertas()
-    vm.alerta = {}
+    location.reload();
   }
 
   //INICIO -- ANGULAR-MULTI-SELECT
@@ -232,7 +221,6 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
   });
 
   vm.ajustarMapa = function() {
-      vm.dateTimeRange()
       leafletData.getMap().then(function(map) {
           setTimeout(function() {
               map.invalidateSize();

@@ -55,22 +55,7 @@
       <div class="form-group">
         <label>Data</label>
         <div class="input-group">
-          <div class="input-group-addon">
-            <i class="fa fa-calendar"></i>
-          </div>
-          <input ng-model="alerta.data" type="text" class="form-control pull-right" id="dataHora">
-        </div>
-      </div>
-    </div>
-    <!-- Date and time range -->
-    <div class="col-xs-12 col-md-3 col-lg-3">
-      <div class="form-group">
-        <label>Hora</label>
-        <div class="input-group">
-          <div class="input-group-addon">
-            <i class="fa fa-clock-o"></i>
-          </div>
-          <input ng-model="alerta.hora" type="text" class="form-control pull-right" id="timePicker">
+          <input ng-model="alerta.data" type="text" class="form-control pull-right" ui-date-mask="DD/MM/YYYY">
         </div>
       </div>
     </div>
@@ -86,6 +71,14 @@
 
     <field id="billingCycleType" label="Falhas Apuradas" model="alerta.falhasApuradas"
          placeholder="Especifique as falhas apuradas" grid="12 6 6" readonly="tabDelete"></field>
+
+    <hr>
+
+    <div class="col-xs-12">
+      <fieldset>
+        <legend>Suspeitos</legend>
+      </fieldset>
+    </div>    
 
     <hr>
 
