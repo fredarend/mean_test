@@ -4,12 +4,12 @@
     <div class="nav-tabs-custom" ng-controller="AlertasCtrl as vm">
       <ul class="nav nav-tabs">
         <li ng-if="tabList" ng-class="{active: tabList}">
-           <a href data-target="#tabList" data-toggle="tab" ng-click="ajustarMapa()" >
+           <a href data-target="#tabList" data-toggle="tab">
              <i class="fa fa-bars"></i> Lista
           </a>
        </li>
        <li ng-if="tabCreate">
-          <a href data-target="#tabCreate" ng-click="ajustarMapa()" data-toggle="tab">
+          <a href data-target="#tabCreate" ng-click="dateTimeRange()" data-toggle="tab">
              <i class="fa fa-plus"></i> Incluir
           </a>
        </li>
