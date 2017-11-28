@@ -16,7 +16,6 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
 
   var vm = $scope
 
-
   //TODA VEZ QUE TROCAR A ROTA DEVE-SE CHAMAR ESSA FUNÇÃO PARA RESETAR OS MARCADORES.
   vm.$on('$destroy', function () { 
       leafletMarkersHelpers.resetMarkerGroups(); 
@@ -36,8 +35,13 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
     })
   }
 
+  vm.haSuspeitos = false;
+
   vm.cadastrarAlerta = function() {
     console.log(vm.alerta)
+
+    
+    return null
     const url = `${consts.apiUrl}/acoes`;
     $http.post(url, vm.alerta).then(function(response) {
       vm.alerta = {}

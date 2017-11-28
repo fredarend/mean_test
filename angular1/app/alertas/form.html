@@ -6,6 +6,9 @@
         <label>Tipo de Ação:</label>
         <div class="form-group">
           <select class="form-control" ng-model="alerta.tipoAcao">
+            <option value="" disabled>
+              Selecione uma Ação
+            </option>
             <option ng-repeat="item in tipoAcoes" value="{{item.name}}">
               {{item.name}}
             </option>
@@ -32,23 +35,9 @@
       </div>
     </div>
 
-    <div class="col-xs-12 col-md-6 col-lg-6">
-      <div class="form-group">
-        <label>Suspeitos:</label>
-        <div class="form-group">
-          <div     
-            isteven-multi-select
-            translation="ptbrSuspeito" 
-            input-model="suspeitos"
-            output-model="alerta.suspeitos.name"
-            button-label="icon name"
-            item-label="icon name maker"
-            tick-property="ticked"
-          >
-          </div>
-        </div>
-      </div>
-    </div>
+
+    <field id="billingCycleClientId" label="Número do BO" model="alerta.numeroBo"
+         placeholder="Informe o Número do BO" grid="12 6 6" type="number" readonly="tabDelete"></field>
 
     <!-- Date and time range -->
     <div class="col-xs-12 col-md-3 col-lg-3">
@@ -60,9 +49,6 @@
       </div>
     </div>
 
-    <field id="billingCycleClientId" label="Número do BO" model="alerta.numeroBo"
-         placeholder="Informe o Número do BO" grid="12 6 6" type="number" readonly="tabDelete"></field>
-
     <field id="billingCycleType" label="Relato da Ocorrência" model="alerta.relato"
          placeholder="Relate a ocorrência" grid="12 6 6" readonly="tabDelete"></field>
 
@@ -71,8 +57,16 @@
 
     <field id="billingCycleType" label="Falhas Apuradas" model="alerta.falhasApuradas"
          placeholder="Especifique as falhas apuradas" grid="12 6 6" readonly="tabDelete"></field>
-
-    <hr>
+ 
+    <div class="col-xs-12 col-md-6 col-lg-6">
+      <div class="form-group">
+        <label>Há Suspeitos?</label>
+        <div class="form-group">
+          <input type="radio" name="iCheck"> Sim <br>
+          <input type="radio" name="iCheck" checked> Não
+        </div>
+      </div>
+    </div>
 
     <div class="col-xs-12">
       <fieldset>
