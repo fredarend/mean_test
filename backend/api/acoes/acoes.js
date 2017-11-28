@@ -4,7 +4,7 @@ const mongoose = restful.mongoose
 
 // SUSPEITOS - INICIO //
 const suspeitosSchema = new mongoose.Schema({
-  nome: { type: String, required: true },
+  name: { type: Array },
   sexo: { type: String },
   corPele: { type: String },
   altura: { type: String },
@@ -25,59 +25,34 @@ const veiculosSchema = new mongoose.Schema({
   ocupantes: { type: String }
 })
 
-
-// ALERTAS - INICIO //
-const alertasSchema = new mongoose.Schema({
-  tipoAcao: { type: String },
-  fonte: { type: String },
-  bo: { type: String },
-  numeroBo: { type: Number },
-  imagem: { type: String },
-  relato: { type: String },
-  modus: { type: String },
-  falhasApuradas: { type: String },
-  dataOcorrencia: { type: Date }  
-})
-
-
 // AÇÕES CRIMINOSAS - INICIO //
 const acoesCriminosasSchema = new mongoose.Schema({
-  tipoAcao: { type: String },
-  fonte: { type: String },
-  bo: { type: String },
-  numeroBo: { type: Number },
-  imagem: { type: String },
-  relato: { type: String },
-  modus: { type: String },
-  falhasApuradas: { type: String },
-  dataOcorrencia: { type: Date } 
+  tipoAcao: { type: String }
 })
 
 
 // EVENTOS DE RISCO - INICIO //
 const eventosDeRiscoSchema = new mongoose.Schema({
-  tipoEvento: { type: String },
-  fonte: { type: String },
-  bo: { type: String },
-  numeroBo: { type: Number },
-  imagem: { type: String },
-  relato: { type: String },
-  modus: { type: String },
-  falhasApuradas: { type: String },
-  dataOcorrencia: { type: Date } 
+  tipoEvento: { type: String }
 })
 
 
 // ACOES //
 const acoesSchema = new mongoose.Schema({
   dataCadastro: { type: Date, default: Date.now },
-  latitude: { type: String, required: true },
-  longitude: { type: String, required: true },
+  fonte: { type: Array, required: true },/*
+  bo: { type: String },*/
+  numeroBo: { type: Number, required: true },
+  imagem: { type: String },
+  relato: { type: String, required: true },
+  modus: { type: String, required: true },
+  falhasApuradas: { type: String, required: true },
+  data: { type: Date, required: true }, 
+  latitude: { type: String, default: '-27.226520' },
+  longitude: { type: String, default: '-52.018375' },
   suspeitos: [suspeitosSchema],
   veiculos: [veiculosSchema],
-  alertas: [alertasSchema],
-  acoesCriminosas: [acoesCriminosasSchema],
-  eventosDeRisco: [eventosDeRiscoSchema]
+  tipoAcao: { type: String, required: true, required: true }
 })
 
 module.exports = restful.model('acoes', acoesSchema)

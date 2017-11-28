@@ -6,14 +6,23 @@ angular.module('primeiraApp').controller('AlertasCtrl', [
   'tabs',
   'consts',
   'leafletData',
+  '$timeout',
+  'leafletMarkerEvents',
+  'leafletMarkersHelpers',
   AlertasController
 ])
 
-function AlertasController($scope, $http, $location, msgs, tabs, consts, leafletData) {
+function AlertasController($scope, $http, $location, msgs, tabs, consts, leafletData, $timeout, leafletMarkerEvents, leafletMarkersHelpers) {
 
   var vm = $scope
 
+  //TODA VEZ QUE TROCAR A ROTA DEVE-SE CHAMAR ESSA FUNÇÃO PARA RESETAR OS MARCADORES.
+  vm.$on('$destroy', function () { 
+      leafletMarkersHelpers.resetMarkerGroups(); 
+  });
+
   vm.searchAlertas = function() {
+    vm.ajustarMapa()
     const page = parseInt($location.search().page) || 1
     const url = `${consts.apiUrl}/acoes/searchAlertas`    
     $http.get(url).then(function(resp) {
@@ -26,170 +35,132 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
     })
   }
 
-  //INICIO -- DATE TIME PICKER
-
-  vm.dateTimeRange = function() {
-    $('#dataHora').datepicker({timePicker: true, timePickerIncrement: 30, format: 'dd/mm/yyyy'});
-    $('#timePicker').timepicker();
-  }
-
-  //FIM -- DATE TIME PICKER
+  vm.haSuspeitos = false;
 
   vm.cadastrarAlerta = function() {
+    console.log(vm.alerta)
+
+    
+    return null
     const url = `${consts.apiUrl}/acoes`;
     $http.post(url, vm.alerta).then(function(response) {
       vm.alerta = {}
-      //initCreditsAndDebts()
-      vm.searchAlertas()
       msgs.addSuccess('Operação realizada com sucesso!!')
+      location.reload();
     }).catch(function(resp) {
       msgs.addError(resp.data.errors)
     })
   }
 
-  vm.showTabUpdate = function(billingCycle) {
-    vm.billingCycle = billingCycle
-    initCreditsAndDebts()
-    tabs.show(vm, {tabUpdate: true})
+  vm.marcarPosicaoAcao = function() {
+
+    vm.markers2 = {
+        sicoob: {
+            lat: -27.226785483109737,
+            lng: -52.01850950717926,
+            draggable: true,
+            icon: {
+                type: 'awesomeMarker',
+                prefix: 'fa',
+                icon: 'exclamation',
+                iconColor: 'white',
+                markerColor: 'blue'
+            },
+            focus: true
+        }
+    };
+
+    vm.events2 = {
+        markers: {
+            enable: leafletMarkerEvents.getAvailableEvents(),
+        }
+    };
+
+    vm.eventDetected = "No events yet...";
+    var markerEvents = leafletMarkerEvents.getAvailableEvents();
+    for (var k in markerEvents){
+        var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
+        vm.$on(eventName, function(event, args){
+            vm.eventDetected = event.name;
+        });
+    }
+
+    vm.$on("leafletDirectiveMarker.dragend", function(event, args){
+        vm.alerta.latitude = args.model.lat;
+        vm.alerta.longitude = args.model.lng;
+    });
+
   }
 
-  vm.updateBillingCycle = function() {
-    const url = `${consts.apiUrl}/billingCycles/${vm.billingCycle._id}`
-    $http.put(url, vm.billingCycle).then(function(response) {
-      vm.billingCycle = {}
-      initCreditsAndDebts()
-      vm.getBillingCycles()
-      tabs.show(vm, {tabList: true, tabCreate: true})
-      msgs.addSuccess('Operação realizada com sucesso!')
-    }).catch(function(resp) {
-      msgs.addError(resp.data.errors)
-    })
-  }
-
-  vm.showTabDelete = function(billingCycle) {
-    vm.billingCycle = billingCycle
-    initCreditsAndDebts()
-    tabs.show(vm, {tabDelete: true})
-  }
-
-  vm.deleteBillingCycle = function() {
-    const url = `${consts.apiUrl}/billingCycles/${vm.billingCycle._id}`
-    $http.delete(url, vm.billingCycle).then(function(response) {
-       vm.billingCycle = {}
-       initCreditsAndDebts()
-       vm.getBillingCycles()
-       tabs.show(vm, {tabList: true, tabCreate: true})
-       msgs.addSuccess('Operação realizada com sucesso!')
-    }).catch(function(resp) {
-       msgs.addError(resp.data)
-    })
-  }
-
-  vm.addDebt = function(index) {
-    vm.billingCycle.debts.splice(index + 1, 0, {})
-  }
-
-  vm.cloneDebt = function(index, {name, value, status}) {
-    vm.billingCycle.debts.splice(index + 1, 0, {name, value, status})
-    initCreditsAndDebts()
-  }
-
-  vm.deleteDebt = function(index) {
-    vm.billingCycle.debts.splice(index, 1)
-    initCreditsAndDebts()
-  }
-
-  vm.addCredit = function(index) {
-    vm.billingCycle.credits.splice(index + 1, 0, {name: null, value: null})
-  }
-
-  vm.cloneCredit = function(index, {name, value}) {
-    vm.billingCycle.credits.splice(index + 1, 0, {name, value})
-    initCreditsAndDebts()
-  }
-
-  vm.deleteCredit = function(index) {
-    vm.billingCycle.credits.splice(index, 1)
-    initCreditsAndDebts()
-  }
+  angular.extend(vm, { // EXTENDE AS PROPRIEDADES DO MAP (MARCADORES, LOCALIZAÇÃO INCIAL..)
+      center2: { // LOCALIZAÇÃO INICIAL  .
+          lat: -27.226548,
+          lng: -52.018311,
+          zoom: 17
+      },
+      markers2: vm.markers2,
+      defaults2: {
+          tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          zoomControlPosition: 'topright',
+          tileLayerOptions: {
+              opacity: 0.9,
+              detectRetina: true,
+              reuseTiles: true,
+              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> | &copy <a href="http://www.openstreetmap.org/copyright">GSEG Sistemas</a>',
+          },
+          scrollWheelZoom: true,
+          minZoom: 3,
+          worldCopyJump: true
+      }
+  });
 
   vm.cancel = function() {
-    tabs.show(vm, {tabList: true, tabCreate: true})
-    vm.billingCycle = {}
-    initCreditsAndDebts()
-  }
-
-  vm.calculateValues = function() {
-    vm.credit = 0
-    vm.debt = 0
-
-    if(vm.billingCycle) {
-      vm.billingCycle.credits.forEach(function({value}) {
-        vm.credit += !value || isNaN(value) ? 0 : parseFloat(value)
-      })
-
-      vm.billingCycle.debts.forEach(function({value}) {
-        vm.debt += !value || isNaN(value) ? 0 : parseFloat(value)
-      })
-    }
-
-    vm.total = vm.credit - vm.debt
-  }
-
-
-  var initCreditsAndDebts = function() {
-    if(!vm.billingCycle.debts || !vm.billingCycle.debts.length) {
-      vm.billingCycle.debts = []
-      vm.billingCycle.debts.push({})
-    }
-
-    if(!vm.billingCycle.credits || !vm.billingCycle.credits.length) {
-      vm.billingCycle.credits = []
-      vm.billingCycle.credits.push({})
-    }
-
-    vm.calculateValues()
+    location.reload();
   }
 
   //INICIO -- ANGULAR-MULTI-SELECT
 
   vm.ptbrAcao = {
+      selectAll: "Todos",
       selectNone: "Limpar",
       search: "Pesquisar...",
       nothingSelected: "Selecionar ações"
   }  
   vm.ptbrFonte = {
+      selectAll: "Todos",
       selectNone: "Limpar",
       search: "Pesquisar...",
       nothingSelected: "Selecionar fontes"
   }  
   vm.ptbrSuspeito = {
+      selectAll: "Todos",
       selectNone: "Limpar",
       search: "Pesquisar...",
       nothingSelected: "Selecionar suspeitos"
   }        
 
-  vm.tipoAlerta = [
-      { name: "Furto", ticked: false  },
-      { name: "Roubo armado", ticked: false  },
-      { name: "Furto com maçarico", ticked: false  },
-      { name: "Roubo com furadeira", ticked: false  },
-      { name: "Roubo com explosivo", ticked: false  },
-      { name: "Roubo armado", ticked: false  },
-      { name: "Estelionato", ticked: false  }
+  vm.suspeitos = [
+      { name: "Super Homem"  },
+      { name: "Batman"  },
+      { name: "Homem Aranha"  }
   ];
+
+  vm.tipoAcoes = [
+    { name: "Furto"  },
+    { name: "Roubo armado"  },
+    { name: "Furto com maçarico"  },
+    { name: "Roubo com furadeira"  },
+    { name: "Roubo com explosivo"  },
+    { name: "Roubo armado"  },
+    { name: "Estelionato"  }
+  ]
 
   vm.fonteAlerta = [
-      { name: "Polícia Militar", ticked: false  },
-      { name: "Polícia Civil", ticked: false  },
-      { name: "Gerente", ticked: false  }
+      { name: "Polícia Militar"  },
+      { name: "Polícia Civil"  },
+      { name: "Gerente"  }
   ];
 
-  vm.suspeito = [
-      { name: "Joaquín Guzmán", maker: "(El Chapo)", ticked: false  },
-      { name: "Fernandinho Beiramar", ticked: false  },
-      { name: "Pablo Escobar", ticked: false  }
-  ];
   
   //FIM -- ANGULAR-MULTI-SELECT
 
@@ -205,37 +176,32 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
 
         vm.latitude = parseFloat(value.latitude)
         vm.longitude = parseFloat(value.longitude)
+        vm.tipoAcao = value.tipoAcao
 
-        angular.forEach(value.alertas, function(value, key) {
-          vm.tipoAcao = value.tipoAcao
-          vm.fonte = value.fonte
+        var message = vm.tipoAcao
 
-          var message = vm.tipoAcao + '<br><br><span>Fonte: ' + vm.fonte + '</span>'
-
-          vm.markers.push({
-              group: "Santa Catarina",
-              lat: vm.latitude,
-              lng: vm.longitude,
-              message: message,
-              icon: {
-                  type: 'awesomeMarker',
-                  prefix: 'fa',
-                  icon: 'exclamation',
-                  iconColor: 'white',
-                  markerColor: 'blue'
-              },
-              label: {
-                  options: {
-                      noHide: true
-                  }
-              }
-          });
-        })
+        vm.markers.push({
+            group: "Santa Catarina",
+            lat: vm.latitude,
+            lng: vm.longitude,
+            message: message,
+            icon: {
+                type: 'awesomeMarker',
+                prefix: 'fa',
+                icon: 'exclamation',
+                iconColor: 'white',
+                markerColor: 'blue'
+            },
+            label: {
+                options: {
+                    noHide: true
+                }
+            }
+        });
       })
     })
   }
-
-
+ 
   angular.extend(vm, { // EXTENDE AS PROPRIEDADES DO MAP (MARCADORES, LOCALIZAÇÃO INCIAL..)
       center: { // LOCALIZAÇÃO INICIAL  .
           lat: -27.226548,
@@ -269,8 +235,7 @@ function AlertasController($scope, $http, $location, msgs, tabs, consts, leaflet
       });
   };
 
-  vm.ajustarMapa();
-
+  vm.ajustarMapa()
   vm.searchAlertas()
 
 }
