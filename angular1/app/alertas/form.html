@@ -5,14 +5,16 @@
       <div class="form-group">
         <label>Tipo de Ação:</label>
         <div class="form-group">
-          <select class="form-control" ng-model="alerta.tipoAcao">
-            <option value="" disabled>
-              Selecione uma Ação
-            </option>
-            <option ng-repeat="item in tipoAcoes" value="{{item.name}}">
-              {{item.name}}
-            </option>
-          </select>
+          <div     
+              isteven-multi-select
+              translation="ptbrAcao" 
+              input-model="tipoAlerta"
+              output-model="alerta.tipoAcao"
+              button-label="icon name"
+              item-label="icon name maker"
+              tick-property="ticked"
+          >
+          </div>
         </div>
       </div>
     </div>
@@ -35,21 +37,53 @@
       </div>
     </div>
 
-
-    <field id="billingCycleClientId" label="Número do BO" model="alerta.numeroBo"
-         placeholder="Informe o Número do BO" grid="12 6 6" type="number" readonly="tabDelete"></field>
+    <div class="col-xs-12 col-md-6 col-lg-6">
+      <div class="form-group">
+        <label>Suspeitos:</label>
+        <div class="form-group">
+          <div     
+            isteven-multi-select
+            translation="ptbrSuspeito" 
+            input-model="suspeito"
+            output-model="alerta.suspeito"
+            button-label="icon name"
+            item-label="icon name maker"
+            tick-property="ticked"
+          >
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Date and time range -->
     <div class="col-xs-12 col-md-3 col-lg-3">
       <div class="form-group">
         <label>Data</label>
         <div class="input-group">
-          <input ng-model="alerta.data" type="text" class="form-control pull-right" ui-date-mask="DD/MM/YYYY">
+          <div class="input-group-addon">
+            <i class="fa fa-calendar"></i>
+          </div>
+          <input ng-model="alerta.data" type="text" class="form-control pull-right" id="dataHora">
+        </div>
+      </div>
+    </div>
+    <!-- Date and time range -->
+    <div class="col-xs-12 col-md-3 col-lg-3">
+      <div class="form-group">
+        <label>Hora</label>
+        <div class="input-group">
+          <div class="input-group-addon">
+            <i class="fa fa-clock-o"></i>
+          </div>
+          <input ng-model="alerta.hora" type="text" class="form-control pull-right" id="timePicker">
         </div>
       </div>
     </div>
 
-    <field id="billingCycleType" label="Relato da Ocorrência" model="alerta.relato"
+    <field id="billingCycleClientId" label="Número do BO" model="alerta.numBo"
+         placeholder="Informe o Número do BO" grid="12 6 6" type="number" readonly="tabDelete"></field>
+
+    <field id="billingCycleType" label="Relato da Ocorrência" model="alerta.relatoOcorrencia"
          placeholder="Relate a ocorrência" grid="12 6 6" readonly="tabDelete"></field>
 
     <field id="billingCycleType" label="Módus" model="alerta.modus"
@@ -57,22 +91,6 @@
 
     <field id="billingCycleType" label="Falhas Apuradas" model="alerta.falhasApuradas"
          placeholder="Especifique as falhas apuradas" grid="12 6 6" readonly="tabDelete"></field>
- 
-    <div class="col-xs-12 col-md-6 col-lg-6">
-      <div class="form-group">
-        <label>Há Suspeitos?</label>
-        <div class="form-group">
-          <input type="radio" name="iCheck"> Sim <br>
-          <input type="radio" name="iCheck" checked> Não
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xs-12">
-      <fieldset>
-        <legend>Suspeitos</legend>
-      </fieldset>
-    </div>    
 
     <hr>
 
@@ -103,21 +121,6 @@
         </div>
       </div>
     </div>
-
-    <hr>    
-
-    <div class="col-xs-12">
-      <fieldset>
-        <legend>Local</legend>
-      </fieldset>
-    </div>
-
-      <div class="col-xs-12">
-
-        <label>Arraste o marcador para definir o local do acontecimento.</label><br><span style="font-size: 13px">Local padrão é: Sicoob Crediauc Matriz</span>
-
-        <leaflet style="margin-top: 10px" class="leaflet_list_map" defaults="defaults2" lf-center="center2" ng-init="marcarPosicaoAcao()"  markers="markers2" width="100%" height="480px"></leaflet>
-      </div>
 
     <hr>
 
